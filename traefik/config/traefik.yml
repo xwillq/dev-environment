@@ -1,0 +1,50 @@
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: :443
+    http:
+      tls:
+        certResolver: step-ca
+
+  metrics:
+    address: :1234
+
+
+providers:
+  docker:
+    endpoint: unix:///var/run/docker.sock
+    exposedByDefault: false
+  file:
+    directory: /etc/traefik/dynamic
+
+
+api:
+  dashboard: true
+
+log:
+  level: DEBUG
+
+
+certificatesResolvers:
+  step-ca:
+    acme:
+      caServer: https://step-ca:9000/acme/acme/directory
+      certificatesDuration: 24
+      email: admin@example.com
+      storage: /var/acme/acme.json
+      tlsChallenge: {}
+
+
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
+    entryPoint: metrics

@@ -1,0 +1,94 @@
+version: '7.1'
+
+environment:
+  DATABASES: ${HOME}/Environment/databases
+  PROJECT_DIR: ${PWD}
+
+compose:
+  command: mutagen-compose
+  project_directory: ${PROJECT_DIR}
+  files:
+    - docker-compose.yml
+    - compose.yml
+
+interaction:
+  # Project
+  artisan:
+    service: backend
+    command: php artisan
+    compose:
+      method: exec
+
+  phpstan:
+    service: backend
+    command: vendor/bin/phpstan
+    compose:
+      run_options: [ "volume code:${PWD}", "workdir ${PWD}" ]
+
+  composer:
+    service: backend
+    command: composer
+    compose:
+      run_options: [ "volume ~/.composer:/root/.composer" ]
+
+  shell:
+    service: backend
+    command: sh
+    compose:
+      method: exec
+
+        
+  # Databases
+  psql:
+    service: postgres
+    command: psql
+    compose:
+      method: exec
+    environment:
+      PROJECT_DIR: ${DATABASES}
+    subcommands:
+      import:
+        command: psql
+        compose:
+          run_options: [ "-T" ]
+  pg_dump:
+    service: postgres
+    command: pg_dump
+    compose:
+      method: exec
+    environment:
+      PROJECT_DIR: ${DATABASES}
+
+  mysql:
+    service: mariadb
+    command: mysql
+    compose:
+      method: exec
+    environment:
+      PROJECT_DIR: ${DATABASES}
+    subcommands:
+      import:
+        command: mysql
+        compose:
+          run_options: [ "-T" ]
+  mariadb:
+    service: mariadb
+    command: mariadb
+    compose:
+      method: exec
+    environment:
+      PROJECT_DIR: ${DATABASES}
+    subcommands:
+      import:
+        command: mariadb
+        compose:
+          run_options: [ "-T" ]
+
+  redis-cli:
+    service: redis
+    command: redis-cli
+    compose:
+      method: exec
+    environment:
+      PROJECT_DIR: ${DATABASES}
+

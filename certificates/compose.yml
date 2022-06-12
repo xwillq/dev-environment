@@ -1,0 +1,53 @@
+services:
+  step-ca:
+    image: step-ca
+    container_name: step-ca
+    restart: always
+    logging:
+      driver: local
+    environment:
+      DOCKER_STEPCA_INIT_NAME: Localhost
+      DOCKER_STEPCA_INIT_DNS_NAMES: step-ca
+      DOCKER_STEPCA_INIT_PASSWORD: ${DOCKER_STEPCA_INIT_PASSWORD}
+    volumes:
+      - step-ca-data:/home/step
+      - certificates:/home/step/certs
+    networks:
+      - main
+    dns: 127.0.0.1
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.step.rule=Host(`step.test`)
+      - traefik.http.routers.step.entrypoints=websecure
+      - traefik.http.services.step.loadbalancer.server.port=9000
+      - traefik.http.services.step.loadbalancer.server.scheme=https
+      - traefik.http.services.step.loadbalancer.serverstransport=insecure@file
+
+
+networks:
+  main:
+    external: true
+    name: main
+
+volumes:
+  step-ca-data:
+  certificates:
+    external: true
+    name: certificates
+
+x-mutagen:
+  sync:
+    defaults:
+      mode: one-way-replica
+
+    certificates:
+      alpha: volume://certificates
+      beta: ./certs
+      configurationAlpha:
+        permissions:
+          defaultOwner: id:1000
+          defaultGroup: id:1000
+          
+  sidecar:
+    restart: on-failure

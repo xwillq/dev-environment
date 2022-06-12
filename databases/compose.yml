@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:14.2-alpine3.15
+    container_name: postgres
+    restart: unless-stopped
+    logging:
+      driver: local
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - main
+    ports:
+      - 5432:5432
+
+  mariadb:
+    image: mariadb:10.7
+    container_name: mariadb
+    restart: unless-stopped
+    logging:
+      driver: local
+    environment:
+      MARIADB_ROOT_USER: root
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - main
+    ports:
+      - 3306:3306
+
+  redis:
+    image: redis:6.2-alpine3.15
+    container_name: redis
+    restart: unless-stopped
+    logging:
+      driver: local
+    volumes:
+      - redis-data:/data
+    networks:
+      - main
+
+
+networks:
+  main:
+    external: true
+    name: main
+
+volumes:
+  postgres-data:
+  mariadb-data:
+  redis-data:

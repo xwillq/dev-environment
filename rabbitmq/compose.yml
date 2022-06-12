@@ -1,0 +1,30 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.9-management-alpine
+    container_name: rabbitmq
+    restart: unless-stopped
+    logging:
+      driver: local
+    environment:
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_DEFAULT_VHOST: rabbitmq
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - main
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.test`)
+      - traefik.http.routers.rabbitmq.entrypoints=websecure
+      - traefik.http.services.rabbitmq.loadbalancer.server.port=15672
+
+
+networks:
+  main:
+    external: true
+    name: main
+
+volumes:
+  rabbitmq-data:
