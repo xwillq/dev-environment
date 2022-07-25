@@ -13,9 +13,6 @@ entryPoints:
       tls:
         certResolver: step-ca
 
-  metrics:
-    address: :1234
-
 
 providers:
   docker:
@@ -41,10 +38,3 @@ certificatesResolvers:
       storage: /var/acme/acme.json
       tlsChallenge: {}
 
-
-metrics:
-  prometheus:
-    addEntryPointsLabels: true
-    addRoutersLabels: true
-    addServicesLabels: true
-    entryPoint: metrics

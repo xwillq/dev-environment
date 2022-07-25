@@ -14,7 +14,7 @@ services:
       - certificates:/certs
     networks:
       main:
-        ipv4_address: 172.19.128.1
+        ipv4_address: 172.92.128.1
     ports:
       - 80:80
       - 443:443

@@ -4,3 +4,4 @@ http:
       rule: Host(`traefik.test`)
       service: api@internal
       entrypoints: websecure
+

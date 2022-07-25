@@ -1,6 +1,6 @@
-.PHONY: network, volumes
+.PHONY: all network volumes certificates images up
 
-all: network volumes
+all: network volumes certificates images up
 
 # Создаём сеть, в которой можно будет указать статические ip.
 # --subnet - подсеть, в которой будут находиться контейнеры.
@@ -10,9 +10,21 @@ all: network volumes
 # В этой сети докер будет выдавать контейнерам ip, которые начинаются на 172.19.0.xxx, 
 # все остальные ip в диапазоне 172.19.xxx.xxx можно делать статическими.
 network:
-	docker network create --subnet 172.19.0.0/16 --ip-range 172.19.0.0/8 --gateway 172.19.0.1 main
-
+	docker network create --subnet 172.92.0.0/16 --ip-range 172.92.0.0/8 --gateway 172.92.0.1 main
 
 # Создаём volume, которые будут использоваться несколькими разными сервисами
 volumes:
 	docker volume create certificates
+
+# Собираем образ и запускаем ACME сервер
+certificates:
+	$(MAKE) --directory images/step-ca
+	$(MAKE) --directory certificates
+
+images:
+	$(MAKE) --directory images/php/7.4-nginx
+	$(MAKE) --directory images/php/8.1-rr
+
+up:
+	$(MAKE) --directory traefik up
+	$(MAKE) --directory databases up
