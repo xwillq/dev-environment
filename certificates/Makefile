@@ -1,15 +1,22 @@
-.PHONY: all initialize-env initialize-ca up
+.PHONY: all init clean up
 
-all: initialize-env initialize-ca up
+all: init up
 
-initialize-env:
+init: .env certs
+
+clean:
+	mutagen-compose down -v
+	rm .env || true
+	rm -rf certs || true
+
+.env:
 	cp .env.example .env
 
-initialize-ca:
+certs: .env
 	mutagen-compose up -d
-	sleep 1
+	sleep 2
 	mutagen-compose exec step-ca step ca provisioner add acme --type ACME
 	mutagen-compose restart step-ca
 
-up:
+up: init
 	mutagen-compose up -d

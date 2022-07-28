@@ -1,10 +1,15 @@
-.PHONY: all initialize-env up
+.PHONY: all init clean up
 
-all: initialize-env up
+all: init up
 
-initialize-env:
+init: .env
+
+clean:
+	docker-compose down -v
+	rm .env || true
+
+.env:
 	cp .env.example .env
 
-up:
+up: init
 	docker-compose up -d
-
