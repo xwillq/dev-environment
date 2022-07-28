@@ -8,8 +8,8 @@ compose:
   command: mutagen-compose
   project_directory: ${PROJECT_DIR}
   files:
-    - docker-compose.yml
-    - compose.yml
+    - ${PROJECT_DIR}/docker-compose.yml
+    - ${PROJECT_DIR}/compose.yml
 
 interaction:
   # Project
@@ -92,3 +92,7 @@ interaction:
     environment:
       PROJECT_DIR: ${DATABASES}
 
+  # Other
+  create-project:
+    command: docker run -v ${PWD}:/app -v ${HOME}/.composer:/root/.composer composer composer create-project laravel/laravel
+    
