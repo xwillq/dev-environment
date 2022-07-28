@@ -1,6 +1,6 @@
 .PHONY: all network volumes certificates images up
 
-all: network volumes certificates images up
+all: network volumes certificates up
 
 # Создаём сеть, в которой можно будет указать статические ip.
 # --subnet - подсеть, в которой будут находиться контейнеры.
@@ -20,10 +20,6 @@ volumes:
 certificates:
 	$(MAKE) --directory images/step-ca
 	$(MAKE) --directory certificates
-
-images:
-	$(MAKE) --directory images/php/7.4-nginx
-	$(MAKE) --directory images/php/8.1-rr
 
 up:
 	$(MAKE) --directory traefik up
