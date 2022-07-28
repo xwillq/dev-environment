@@ -1,6 +1,6 @@
 services:
   step-ca:
-    image: step-ca
+    image: ghcr.io/xwillq/dev-environment/step-ca:latest
     container_name: step-ca
     restart: always
     logging:
