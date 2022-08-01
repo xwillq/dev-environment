@@ -1,4 +1,4 @@
-.PHONY: build
+.PHONY: build build-multiarch
 
 build: Dockerfile
 	docker build -t step-ca .
