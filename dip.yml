@@ -1,15 +1,44 @@
 version: '7.1'
 
 environment:
-  DATABASES: ${HOME}/Environment/databases
+  # Путь до папки с средой. В эту переменную нужно записать полный путь до папки со средой 
+  # (где находятся базы данных, traefik и тд), если dip.yml находится не в ней.
+  ENVIRONMENT_DIR: ${HOME}/Environment
+
+  # Папка, в которой находится compose файл с базами данных.
+  # Используется для перезаписи PROJECT_DIR при запуске команд, выполняемых в контейнерах с базами данных.
+  DATABASES: ${ENVIRONMENT_DIR}/databases
+  # Папка, в которой находится compose файл node.js.
+  # Используется для перезаписи PROJECT_DIR при запуске команд, выполняемых в контейнере с node.js.
+  NODE: ${ENVIRONMENT_DIR}/node
+
+  # Путь до папки с проектом. Композ берёт из неё compose и .env файлы, а так же использует её для маунтов
+  # относительных путей.
+  # По умолчанию используется текущая папка.
+  #
+  # Эта переменная перезаписывается для некоторых команд, которым нужно использовать compose и .env файлы, 
+  # которые находятся в другой папке.
   PROJECT_DIR: ${PWD}
+  # Путь до compose файла. По умолчанию используется не существующий файл, чтобы dip не передавал его композу, и композ
+  # использовал файл из папки с проектом.
+  #
+  # Эта переменная перезаписывается для некоторых команд, которым нужно использовать compose файл, который находится вне
+  # папки с проектом.
+  COMPOSE_YML: doesnt-exist
 
 compose:
+  # Команда, которая будет использоваться для запуска compose
   command: mutagen-compose
+  # Путь до папки проекта. Передаётся в флаг --project-directory <dir> при запуске compose.
+  # В пути используется переменная, чтобы его можно было менять для разных команд
   project_directory: ${PROJECT_DIR}
+  # Путь до compose файла. Если dip найдёт этот файл, то он будет передан композу через флаг --file.
+  # Если файл не будет передан, будет использоваться файл из папки с проектом.
+  #
+  # Файл ищется по абсолютному пути или относительно папки, в которой находится конфиг.
+  # В пути используется переменная, чтобы его можно было менять для разных команд.
   files:
-    - ${PROJECT_DIR}/docker-compose.yml
-    - ${PROJECT_DIR}/compose.yml
+    - ${COMPOSE_YML}
 
 interaction:
   # Project
@@ -23,13 +52,13 @@ interaction:
     service: backend
     command: vendor/bin/phpstan
     compose:
-      run_options: [ "volume code:${PWD}", "workdir ${PWD}" ]
+      run_options: [ "volume code:${PROJECT_DIR}", "workdir ${PROJECT_DIR}" ]
 
   composer:
     service: backend
     command: composer
     compose:
-      run_options: [ "volume ~/.composer:/root/.composer" ]
+      run_options: [ "volume ${HOME}/.composer:/root/.composer" ]
 
   shell:
     service: backend
@@ -93,6 +122,17 @@ interaction:
       PROJECT_DIR: ${DATABASES}
 
   # Other
+  npm:
+    service: node
+    command: npm
+    environment:
+      COMPOSE_YML: ${NODE}/compose.yml
+  
+  yarn:
+    service: node
+    command: yarn
+    environment:
+      COMPOSE_YML: ${NODE}/compose.yml
+
   create-project:
-    command: docker run -v ${PWD}:/app -v ${HOME}/.composer:/root/.composer composer composer create-project laravel/laravel
-    
+    command: docker run -v ${PWD}:/app -v ${HOME}/.composer:/root/.composer composer:2.1.14 composer create-project laravel/laravel
