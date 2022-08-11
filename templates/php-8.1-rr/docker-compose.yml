@@ -7,12 +7,17 @@ services:
       driver: local
     environment:
       PHP_IDE_CONFIG: serverName=${DOMAIN}
-      PHP_MEMORY_LIMIT: 128M 
+      PHP_MEMORY_LIMIT: 128M
+
+      # Переменные из Octane
+      APP_BASE_PATH: /app
+      APP_ENV: ${APP_ENV}
+      LARAVEL_OCTANE: 1
     volumes:
       - code:/app
     networks:
       - main
-    command: php artisan octane:start --host 0.0.0.0
+    command: rr serve -o http.pool.supervisor.max_worker_memory=128
     labels:
       - traefik.enable=true
 
