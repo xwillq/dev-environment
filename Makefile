@@ -31,6 +31,8 @@ network:
 # Создаём volume, которые будут использоваться несколькими разными сервисами
 volumes:
 	docker volume create certificates
+	docker volume create composer-cache
+	docker run --rm -v composer-cache:/composer ghcr.io/xwillq/dev-environment/php/8.1-rr:latest chmod 777 /composer
 
 up:
 	$(MAKE) --directory certificates up

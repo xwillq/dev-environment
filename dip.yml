@@ -58,7 +58,9 @@ interaction:
     service: backend
     command: composer
     compose:
-      run_options: [ "volume ${HOME}/.composer:/root/.composer" ]
+      run_options:
+        - env COMPOSER_HOME=/composer
+        - volume composer-cache:/composer
 
   shell:
     service: backend
@@ -141,4 +143,4 @@ interaction:
       COMPOSE_YML: ${NODE}/compose.yml
 
   create-project:
-    command: docker run -v ${PWD}:/app -v ${HOME}/.composer:/root/.composer composer:2.1.14 composer create-project laravel/laravel
+    command: docker run -v ${PWD}:/app -v composer-cache:/composer -e COMPOSER_HOME=/composer composer:2.1.14 composer create-project laravel/laravel
