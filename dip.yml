@@ -41,7 +41,9 @@ compose:
     - ${COMPOSE_YML}
 
 interaction:
-  # Project
+  # Backend
+
+  # Взаимодействие с проектом
   artisan:
     service: backend
     command: php artisan
@@ -52,8 +54,18 @@ interaction:
     service: backend
     command: vendor/bin/phpstan
     compose:
-      run_options: [ "volume code:${PROJECT_DIR}", "workdir ${PROJECT_DIR}" ]
+      run_options:
+        - env PHP_MEMORY_LIMIT=2048M
+        - volume code:${PROJECT_DIR}
+        - workdir ${PROJECT_DIR}
 
+  pint:
+    service: backend
+    command: vendor/bin/pint
+    compose:
+      method: exec
+
+  # Запуск программ внутри контейнера
   composer:
     service: backend
     command: composer
@@ -62,20 +74,26 @@ interaction:
         - env COMPOSER_HOME=/composer
         - volume composer-cache:/composer
 
-  shell:
-    service: backend
-    command: sh
-    compose:
-      method: exec
-
   rr:
     service: backend
     command: rr
     compose:
       method: exec
 
+  shell:
+    service: backend
+    command: sh
+    compose:
+      method: exec
+    subcommands:
+      root:
+        command: sh
+        compose:
+          run_options:
+            - user root
 
-  # Databases
+
+  # Базы данных
   psql:
     service: postgres
     command: psql
@@ -129,7 +147,7 @@ interaction:
     environment:
       PROJECT_DIR: ${DATABASES}
 
-  # Other
+  # Frontend
   npm:
     service: node
     command: npm
@@ -142,5 +160,6 @@ interaction:
     environment:
       COMPOSE_YML: ${NODE}/compose.yml
 
+  # Другое
   create-project:
-    command: docker run -v ${PWD}:/app -v composer-cache:/composer -e COMPOSER_HOME=/composer composer:2.1.14 composer create-project laravel/laravel
+    command: docker run --rm -v ${PWD}:/app -v composer-cache:/composer -e COMPOSER_HOME=/composer ghcr.io/xwillq/dev-environment/php/8.1-rr:latest composer create-project laravel/laravel
