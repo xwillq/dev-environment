@@ -26,16 +26,6 @@ server:
   # This option is required.
   command: "php vendor/bin/roadrunner-worker" # В Octane указывается в конфиге
 
-  # Username (not UID) for the worker processes. An empty value means to use the RR process user.
-  #
-  # Default: ""
-  user: "www-data"
-
-  # Group name (not GID) for the worker processes. An empty value means to use the RR process user.
-  #
-  # Default: ""
-  group: "www-data"
-
   # Environment variables for the worker processes.
   #
   # Default: <empty map>

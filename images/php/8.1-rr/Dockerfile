@@ -28,6 +28,7 @@ ENV PHP_MEMORY_LIMIT=128M
 
 # Настройка образа
 
+USER www-data:www-data
+
 WORKDIR /app
 CMD ["/usr/bin/rr", "serve"]
-
