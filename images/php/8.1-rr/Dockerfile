@@ -23,6 +23,8 @@ RUN apk add git ffmpeg
 
 COPY config/php/ /usr/local/etc/php/
 
+ENV PHP_MEMORY_LIMIT=128M
+
 
 # Настройка образа
 
