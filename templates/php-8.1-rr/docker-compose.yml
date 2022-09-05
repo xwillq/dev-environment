@@ -13,6 +13,10 @@ services:
       APP_BASE_PATH: /app
       APP_ENV: ${APP_ENV}
       LARAVEL_OCTANE: 1
+
+      # Фикс ссылок на редактирование файлов на странице ошибки
+      IGNITION_LOCAL_SITES_PATH: ${PWD}
+
     volumes:
       - code:/app
     networks:
