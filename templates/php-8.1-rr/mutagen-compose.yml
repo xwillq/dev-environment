@@ -1,6 +1,6 @@
 services:
   backend:
-    image: ghcr.io/xwillq/dev-environment/php/7.4-nginx:latest
+    image: ghcr.io/xwillq/dev-environment/php/8.1-rr:latest
     container_name: ${APP_NAME}
     restart: on-failure
     logging:
@@ -8,28 +8,36 @@ services:
     environment:
       PHP_IDE_CONFIG: serverName=${APP_NAME}
       PHP_MEMORY_LIMIT: 128M
+
+      # Переменные из Octane
+      APP_BASE_PATH: /app
+      APP_ENV: ${APP_ENV}
+      LARAVEL_OCTANE: 1
+
+      # Фикс ссылок на редактирование файлов на странице ошибки
+      IGNITION_LOCAL_SITES_PATH: ${PWD}
     volumes:
-      - ./:/app
+      - code:/app
     networks:
       - main
+    command: rr serve -o http.pool.supervisor.max_worker_memory=128
     labels:
       - traefik.enable=true
 
       - traefik.http.routers.${APP_NAME}.rule=Host(`${DOMAIN}`)
       - traefik.http.routers.${APP_NAME}.entrypoints=websecure
-      - traefik.http.services.${APP_NAME}.loadbalancer.server.port=80
+      - traefik.http.services.${APP_NAME}.loadbalancer.server.port=8000
 
   default-queue:
-    image: ghcr.io/xwillq/dev-environment/php/7.4-nginx:latest
+    image: ghcr.io/xwillq/dev-environment/php/8.1-rr:latest
     restart: on-failure
-    user: www-data
     logging:
       driver: local
     environment:
-      PHP_IDE_CONFIG: serverName=${APP_NAME}
+      PHP_IDE_CONFIG: serverName=${DOMAIN}
       PHP_MEMORY_LIMIT: 128M
     volumes:
-      - ./:/app
+      - code:/app
     networks:
       - main
     command: php artisan queue:listen --timeout 3600 --memory 128 --queue default
@@ -62,4 +70,31 @@ networks:
     name: main
 
 volumes:
+  code:
   echo-server:
+
+x-mutagen:
+  sync:
+    defaults:
+      scanMode: full
+      ignore:
+        paths:
+          - "*.sql"
+      mode: two-way-resolved
+
+    code:
+      alpha: .
+      configurationAlpha:
+        permissions:
+          defaultFileMode: 0o644
+          defaultDirectoryMode: 0o755
+      beta: volume://code
+      configurationBeta:
+        permissions:
+          defaultOwner: id:82
+          defaultGroup: id:82
+          defaultFileMode: 0o644
+          defaultDirectoryMode: 0o755
+
+  sidecar:
+    restart: on-failure

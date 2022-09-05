@@ -1,4 +1,24 @@
 services:
+  traefik:
+    image: traefik:v2.7
+    container_name: traefik
+    restart: always
+    logging:
+      driver: local
+    environment:
+      LEGO_CA_CERTIFICATES: /certs/root_ca.crt
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config:/etc/traefik
+      - traefik-acme:/var/acme
+      - ./ca/certs:/certs
+    networks:
+      main:
+        ipv4_address: 172.92.128.1
+    ports:
+      - 80:80
+      - 443:443
+
   step-ca:
     image: ghcr.io/xwillq/dev-environment/step-ca:latest
     container_name: step-ca
@@ -10,8 +30,7 @@ services:
       DOCKER_STEPCA_INIT_DNS_NAMES: step-ca
       DOCKER_STEPCA_INIT_PASSWORD: ${DOCKER_STEPCA_INIT_PASSWORD}
     volumes:
-      - step-ca-data:/home/step
-      - certificates:/home/step/certs
+      - ./ca:/home/step
     networks:
       - main
     dns: 127.0.0.1
@@ -31,23 +50,4 @@ networks:
     name: main
 
 volumes:
-  step-ca-data:
-  certificates:
-    external: true
-    name: certificates
-
-x-mutagen:
-  sync:
-    defaults:
-      mode: one-way-replica
-
-    certificates:
-      alpha: volume://certificates
-      beta: ./certs
-      configurationAlpha:
-        permissions:
-          defaultOwner: id:1000
-          defaultGroup: id:1000
-          
-  sidecar:
-    restart: on-failure
+  traefik-acme:

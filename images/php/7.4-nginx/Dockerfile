@@ -5,9 +5,7 @@ FROM php:7.4-fpm-alpine3.15
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN install-php-extensions opcache pcntl zip intl
-RUN install-php-extensions pdo_mysql pdo_pgsql redis
-RUN install-php-extensions xdebug yaml bcmath gd
+RUN install-php-extensions opcache pcntl zip intl sockets gd exif pdo_mysql pdo_pgsql redis xdebug yaml bcmath
 
 RUN apk add nginx supervisor git
 
@@ -37,12 +35,15 @@ COPY config/supervisord-includes/ /etc/supervisor/conf.d/
 
 # Настройка образа
 
+RUN git config --system --add safe.directory /app
+
 COPY config/docker-entrypoint.sh /docker-entrypoint.sh
 COPY config/docker-entrypoint.d/ /docker-entrypoint.d/
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 WORKDIR /app
+RUN chown -R www-data:www-data /app
 STOPSIGNAL SIGQUIT
 
 CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]

@@ -9,7 +9,7 @@ services:
       PHP_IDE_CONFIG: serverName=${APP_NAME}
       PHP_MEMORY_LIMIT: 128M
     volumes:
-      - ./:/app
+      - code:/app
     networks:
       - main
     labels:
@@ -26,10 +26,10 @@ services:
     logging:
       driver: local
     environment:
-      PHP_IDE_CONFIG: serverName=${APP_NAME}
+      PHP_IDE_CONFIG: serverName=${DOMAIN}
       PHP_MEMORY_LIMIT: 128M
     volumes:
-      - ./:/app
+      - code:/app
     networks:
       - main
     command: php artisan queue:listen --timeout 3600 --memory 128 --queue default
@@ -62,4 +62,31 @@ networks:
     name: main
 
 volumes:
+  code:
   echo-server:
+
+x-mutagen:
+  sync:
+    defaults:
+      scanMode: full
+      ignore:
+        paths:
+          - "*.sql"
+      mode: two-way-resolved
+
+    code:
+      alpha: .
+      configurationAlpha:
+        permissions:
+          defaultFileMode: 0o644
+          defaultDirectoryMode: 0o755
+      beta: volume://code
+      configurationBeta:
+        permissions:
+          defaultOwner: id:82
+          defaultGroup: id:82
+          defaultFileMode: 0o644
+          defaultDirectoryMode: 0o755
+
+  sidecar:
+    restart: on-failure
