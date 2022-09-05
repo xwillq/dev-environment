@@ -76,7 +76,6 @@ x-mutagen:
     defaults:
       scanMode: full
       ignore:
-        vcs: true
         paths:
           - "*.sql"
       mode: two-way-resolved

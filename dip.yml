@@ -65,6 +65,12 @@ interaction:
     compose:
       method: exec
 
+  captainhook:
+    service: backend
+    command: vendor/bin/captainhook
+    compose:
+      method: exec
+
   # Запуск программ внутри контейнера
   composer:
     service: backend
