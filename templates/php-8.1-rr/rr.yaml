@@ -205,7 +205,7 @@ http:
       # Maximal job lifetime (hard limit). Zero means no limit.
       #
       # Default: 0s
-      exec_ttl: 60s # В Octane указывается в конфиге
+      exec_ttl: 0s # В Octane указывается в конфиге
 
   # HTTP/2 settings.
   http2:
