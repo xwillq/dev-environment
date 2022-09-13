@@ -15,6 +15,7 @@ services:
       LARAVEL_OCTANE: 1
 
       # Фикс ссылок на редактирование файлов на странице ошибки
+      IGNITION_REMOTE_SITES_PATH: /app
       IGNITION_LOCAL_SITES_PATH: ${PWD}
     volumes:
       - code:/app

@@ -15,6 +15,7 @@ services:
       LARAVEL_OCTANE: 1
 
       # Фикс ссылок на редактирование файлов на странице ошибки
+      IGNITION_REMOTE_SITES_PATH: /app
       IGNITION_LOCAL_SITES_PATH: ${PWD}
     volumes:
       - ./:/app
@@ -47,8 +48,7 @@ services:
     restart: on-failure
     logging:
       driver: local
-    environment:
-      LARAVEL_ECHO_SERVER_AUTH_HOST: http://${APP_NAME}
+    environment: LARAVEL_ECHO_SERVER_AUTH_HOST: http://${APP_NAME}
       LARAVEL_ECHO_SERVER_REDIS_HOST: redis
       LARAVEL_ECHO_SERVER_REDIS_PORT: 6379
     volumes:

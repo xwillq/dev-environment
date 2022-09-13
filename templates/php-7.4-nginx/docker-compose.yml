@@ -8,6 +8,10 @@ services:
     environment:
       PHP_IDE_CONFIG: serverName=${APP_NAME}
       PHP_MEMORY_LIMIT: 128M
+
+      # Фикс ссылок на редактирование файлов на странице ошибки
+      IGNITION_REMOTE_SITES_PATH: /app
+      IGNITION_LOCAL_SITES_PATH: ${PWD}
     volumes:
       - ./:/app
     networks:
