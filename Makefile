@@ -19,11 +19,11 @@ network:
 	docker network create --subnet 172.92.0.0/16 --ip-range 172.92.0.0/8 --gateway 172.92.0.1 main
 
 # Создаём volume, которые должны существовать всегда
-volumes:
-	docker volume create composer-7.4-cache
-	docker run --rm -v composer-7.4-cache:/composer ghcr.io/xwillq/dev-environment/php/7.4-nginx:latest chmod 777 /composer
-	docker volume create composer-8.1-cache
-	docker run --rm -v composer-8.1-cache:/composer ghcr.io/xwillq/dev-environment/php/8.1-rr:latest chmod 777 /composer
+#volumes:
+#	docker volume create composer-7.4-cache
+#	docker run --rm -v composer-7.4-cache:/composer ghcr.io/xwillq/dev-environment/php/7.4-nginx:latest chmod 777 /composer
+#	docker volume create composer-8.1-cache
+#	docker run --rm -v composer-8.1-cache:/composer ghcr.io/xwillq/dev-environment/php/8.1-rr:latest chmod 777 /composer
 
 up:
 	$(MAKE) --directory databases up
@@ -34,6 +34,6 @@ clean:
 	$(MAKE) --directory minio clean
 	$(MAKE) --directory rabbitmq clean
 	$(MAKE) --directory reverse-proxy clean
-	docker volume rm composer-7.4-cache
-	docker volume rm composer-8.1-cache
+#	docker volume rm composer-7.4-cache
+#	docker volume rm composer-8.1-cache
 	docker network rm main

@@ -84,8 +84,8 @@ interaction:
     compose:
       run_options:
         - user www-data
-        - env COMPOSER_HOME=/composer
-        - volume composer-cache:/composer
+#        - env COMPOSER_HOME=/composer
+#        - volume composer-cache:/composer
 
   rr:
     service: backend
@@ -117,10 +117,10 @@ interaction:
         - user www-data
 
   composer-8.1:
-    command: docker run -it --rm -v ${PWD}:/app -v composer-cache:/composer -e COMPOSER_HOME=/composer ghcr.io/xwillq/dev-environment/php/8.1-rr:latest composer
+    command: docker run -it --rm -v ${PWD}:/app ghcr.io/xwillq/dev-environment/php/8.1-rr:latest composer
 
   composer-7.4:
-    command: docker run -it --rm -v ${PWD}:/app -v composer-cache:/composer -e COMPOSER_HOME=/composer ghcr.io/xwillq/dev-environment/php/7.4-nginx:latest composer
+    command: docker run -it --rm -v ${PWD}:/app ghcr.io/xwillq/dev-environment/php/7.4-nginx:latest composer
 
 
   # Базы данных
