@@ -1,4 +1,4 @@
-FROM smallstep/step-ca
+FROM smallstep/step-ca:0.21.0
 
 # Меняем пользователя на root, чтобы можно было поставить dnsmasq
 USER root
@@ -10,4 +10,3 @@ COPY config/entrypoint.sh /entrypoint.sh
 
 # Возвращаем стандартного пользователя
 USER step
-
