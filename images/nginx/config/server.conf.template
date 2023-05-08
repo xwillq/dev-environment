@@ -1,0 +1,32 @@
+server {
+    listen   ${NGINX_PORT};
+    listen   [::]:${NGINX_PORT} default ipv6only=on;
+
+    root ${PUBLIC_DIR};
+    index index.php index.html index.htm;
+
+    server_name _;
+
+    client_max_body_size 100M;
+
+    # FastCGI read timeout is set to one hour to prevent closing connection
+    # while debugging
+    fastcgi_read_timeout        3600;
+    proxy_connect_timeout       300;
+    proxy_send_timeout          300;
+    proxy_read_timeout          300;
+    send_timeout                300;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        try_files $uri = 404;
+        include fastcgi_params;
+        fastcgi_pass ${PHP_HOST}:9000;
+        fastcgi_index index.php;
+
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
