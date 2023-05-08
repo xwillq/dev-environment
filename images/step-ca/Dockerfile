@@ -1,4 +1,4 @@
-FROM smallstep/step-ca:0.21.0
+FROM smallstep/step-ca:0.24.1
 
 # Меняем пользователя на root, чтобы можно было поставить dnsmasq
 USER root

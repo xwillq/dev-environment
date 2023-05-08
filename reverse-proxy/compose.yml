@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik:v2.7
+    image: traefik:v2.10
     container_name: traefik
     restart: always
     logging:
@@ -27,21 +27,15 @@ services:
       driver: local
     environment:
       DOCKER_STEPCA_INIT_NAME: Localhost
+      DOCKER_STEPCA_INIT_ADDRESS: ":9000"
       DOCKER_STEPCA_INIT_DNS_NAMES: step-ca
       DOCKER_STEPCA_INIT_PASSWORD: ${DOCKER_STEPCA_INIT_PASSWORD}
+      DOCKER_STEPCA_INIT_ACME: true
     volumes:
       - ./ca:/home/step
     networks:
       - main
     dns: 127.0.0.1
-    labels:
-      - traefik.enable=true
-
-      - traefik.http.routers.step.rule=Host(`step.test`)
-      - traefik.http.routers.step.entrypoints=websecure
-      - traefik.http.services.step.loadbalancer.server.port=9000
-      - traefik.http.services.step.loadbalancer.server.scheme=https
-      - traefik.http.services.step.loadbalancer.serverstransport=insecure@file
 
 
 networks:

@@ -8,8 +8,7 @@ init: .env ca
 	cp .env.example .env
 
 ca: .env
-	docker-compose run --rm -T step-ca echo 'Initialized step-ca'
-	docker-compose run --rm -T step-ca step ca provisioner add acme --type ACME
+	docker-compose run --rm -T step-ca printf "\n\e[0;32mInitialized step-ca\e[0;37m\n"
 
 up: init
 	docker-compose up -d

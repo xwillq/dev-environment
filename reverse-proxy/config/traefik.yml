@@ -37,4 +37,3 @@ certificatesResolvers:
       email: admin@example.com
       storage: /var/acme/acme.json
       tlsChallenge: {}
-
