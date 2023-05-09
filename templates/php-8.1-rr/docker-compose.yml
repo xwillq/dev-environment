@@ -48,7 +48,8 @@ services:
     restart: on-failure
     logging:
       driver: local
-    environment: LARAVEL_ECHO_SERVER_AUTH_HOST: http://${APP_NAME}
+    environment:
+      LARAVEL_ECHO_SERVER_AUTH_HOST: http://${APP_NAME}
       LARAVEL_ECHO_SERVER_REDIS_HOST: redis
       LARAVEL_ECHO_SERVER_REDIS_PORT: 6379
     volumes:
