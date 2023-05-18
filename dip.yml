@@ -27,8 +27,6 @@ environment:
   COMPOSE_YML: doesnt-exist
 
 compose:
-  # Команда, которая будет использоваться для запуска compose
-  # command: mutagen-compose
   # Путь до папки проекта. Передаётся в флаг --project-directory <dir> при запуске compose.
   # В пути используется переменная, чтобы его можно было менять для разных команд
   project_directory: ${PROJECT_DIR}
