@@ -2,7 +2,7 @@
 
 all: init up
 
-init: network volumes
+init: network
 	$(MAKE) --directory databases init
 	$(MAKE) --directory minio init
 	$(MAKE) --directory rabbitmq init
