@@ -16,7 +16,7 @@ init: network volumes
 # В этой сети докер будет выдавать контейнерам ip, которые начинаются на 172.92.0.xxx, 
 # все остальные ip в диапазоне 172.92.xxx.xxx можно делать статическими.
 network:
-	docker network create --subnet 172.92.0.0/16 --ip-range 172.92.0.0/8 --gateway 172.92.0.1 main
+	docker network create --subnet 172.92.0.0/16 --ip-range 172.92.0.0/24 --gateway 172.92.0.1 main || true
 
 # Создаём volume, которые должны существовать всегда
 #volumes:
