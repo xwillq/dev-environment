@@ -43,32 +43,8 @@ services:
       - main
     command: php artisan queue:listen --timeout 3600 --memory 128 --queue default
 
-  echo-server:
-    image: oanhnn/laravel-echo-server
-    restart: on-failure
-    logging:
-      driver: local
-    environment:
-      LARAVEL_ECHO_SERVER_AUTH_HOST: http://${APP_NAME}
-      LARAVEL_ECHO_SERVER_REDIS_HOST: redis
-      LARAVEL_ECHO_SERVER_REDIS_PORT: 6379
-    volumes:
-      - echo-server:/app
-      - ./echo-server.json:/app/laravel-echo-server.json
-    networks:
-      - main
-    labels:
-      - traefik.enable=true
-
-      - traefik.http.routers.${APP_NAME}-echo-server.rule=Host(`${DOMAIN}`) && PathPrefix(`/socket.io`)
-      - traefik.http.routers.${APP_NAME}-echo-server.entrypoints=websecure
-      - traefik.http.services.${APP_NAME}-echo-server.loadbalancer.server.port=6001
-
 
 networks:
   main:
     external: true
     name: main
-
-volumes:
-  echo-server:
