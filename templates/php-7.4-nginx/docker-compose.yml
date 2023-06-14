@@ -1,7 +1,7 @@
 services:
   backend:
     image: ghcr.io/xwillq/dev-environment/php/7.4-nginx:latest
-    container_name: ${APP_NAME}
+    container_name: ${COMPOSE_PROJECT_NAME}
     restart: on-failure
     environment:
       PHP_IDE_CONFIG: serverName=${APP_NAME}
@@ -17,9 +17,9 @@ services:
     labels:
       - traefik.enable=true
 
-      - traefik.http.routers.${APP_NAME}.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.${APP_NAME}.entrypoints=websecure
-      - traefik.http.services.${APP_NAME}.loadbalancer.server.port=80
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=80
 
   default-queue:
     image: ghcr.io/xwillq/dev-environment/php/7.4-nginx:latest
