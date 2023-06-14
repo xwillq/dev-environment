@@ -3,8 +3,6 @@ services:
     image: ghcr.io/xwillq/dev-environment/php/8.1-rr:latest
     container_name: ${APP_NAME}
     restart: on-failure
-    logging:
-      driver: local
     environment:
       PHP_IDE_CONFIG: serverName=${APP_NAME}
       PHP_MEMORY_LIMIT: 128M
@@ -32,8 +30,6 @@ services:
   default-queue:
     image: ghcr.io/xwillq/dev-environment/php/8.1-rr:latest
     restart: on-failure
-    logging:
-      driver: local
     environment:
       PHP_IDE_CONFIG: serverName=${APP_NAME}
       PHP_MEMORY_LIMIT: 128M
