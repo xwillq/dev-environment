@@ -1,8 +1,11 @@
-.PHONY: all init up clean
+.PHONY: all init build up clean
 
 all: init up
 
-init: .env ca
+init: build .env ca
+
+build:
+	docker-compose build
 
 .env:
 	cp .env.example .env

@@ -6,7 +6,8 @@ USER root
 RUN apk add dnsmasq
 
 COPY config/dnsmasq.conf /etc/dnsmasq.conf
-COPY config/entrypoint.sh /entrypoint.sh
+
+RUN sed -i '2adnsmasq' /entrypoint.sh
 
 # Возвращаем стандартного пользователя
 USER step

@@ -20,8 +20,9 @@ services:
       - 443:443
 
   step-ca:
-    image: ghcr.io/xwillq/dev-environment/step-ca:latest
+    image: step-ca
     container_name: step-ca
+    build: ./images/step-ca
     restart: always
     logging:
       driver: local
