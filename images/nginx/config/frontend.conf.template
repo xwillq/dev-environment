@@ -1,0 +1,12 @@
+server {
+    listen ${FRONTEND_PORT};
+    listen [::]:${FRONTEND_PORT} default ipv6only=on;
+
+    root ${DIST_DIR};
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

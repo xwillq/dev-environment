@@ -19,7 +19,7 @@ services:
     image: ghcr.io/xwillq/dev-environment/nginx:latest
     restart: on-failure
     environment:
-      NGINX_PORT: 8080
+      BACKEND_PORT: 8080
       PHP_HOST: ${COMPOSE_PROJECT_NAME}
       PUBLIC_DIR: /app/public
     volumes:
