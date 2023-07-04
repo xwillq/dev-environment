@@ -3,8 +3,6 @@ services:
     image: rabbitmq:3.9-management-alpine
     container_name: rabbitmq
     restart: unless-stopped
-    logging:
-      driver: local
     environment:
       RABBITMQ_DEFAULT_USER: root
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
