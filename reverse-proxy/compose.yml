@@ -12,7 +12,7 @@ services:
       - ./ca/certs:/certs
     networks:
       main:
-        ipv4_address: 172.92.128.1
+        ipv4_address: 172.31.128.2
     ports:
       - 80:80
       - 443:443
