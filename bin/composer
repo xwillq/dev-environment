@@ -1,0 +1,36 @@
+#!/bin/sh
+
+[ -f "$PWD/compose.yml" -o -f "$PWD/compose.yaml" -o -f "$PWD/docker-compose.yml" -o -f "$PWD/docker-compose.yaml" ]
+use_docker_compose=$?
+
+cmd_args='--user=www-data'
+
+function run_docker_compose() {
+    local cmd=''
+    if docker compose ps --services | grep backend &>/dev/null; then
+        cmd='exec'
+    else 
+        cmd='run'
+        cmd_args="$cmd_args --rm"
+    fi
+
+    if [ ! -t 0 ]; then
+        cmd_args="$cmd_args --no-TTY"
+    fi
+
+    docker compose $cmd $cmd_args backend composer $@
+}
+
+function run_docker() {
+    if [ -t 0 ]; then
+        cmd_args="$cmd_args --tty --interactive"
+    fi
+
+    docker run --rm $cmd_args --volume="$PWD":/app --workdir /app composer:2.5 $@
+}
+
+if [ $use_docker_compose -eq 0 ]; then
+    run_docker_compose $@
+else
+    run_docker $@
+fi

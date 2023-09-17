@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -z $NODE_VERSION ]; then
+    NODE_VERSION=lts
+fi
+
+cmd_args=''
+if [ -t 0 ]; then
+    cmd_args="$cmd_args --tty --interactive"
+fi
+
+docker run --rm $cmd_args --volume="$PWD":/app --workdir /app node:${NODE_VERSION}-alpine $@

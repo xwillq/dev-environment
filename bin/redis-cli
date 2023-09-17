@@ -1,0 +1,12 @@
+#!/bin/sh
+
+env_dir=$(dirname $(dirname $(readlink -f "$0")))
+
+compose_args="--project-directory=$env_dir/databases"
+
+cmd_args=''
+if [ ! -t 0 ]; then
+    cmd_args="$cmd_args --no-TTY"
+fi
+
+docker compose $compose_args exec $cmd_args redis redis-cli "$@"
