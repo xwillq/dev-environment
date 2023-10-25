@@ -3,8 +3,8 @@ services:
     image: postgres:${POSTGRES_VERSION}-alpine
     container_name: postgres
     restart: unless-stopped
+    user: postgres
     environment:
-      POSTGRES_USER: root
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql/data
