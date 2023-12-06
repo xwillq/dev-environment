@@ -1,28 +1,22 @@
 #!/bin/sh
 
-[ -f "$PWD/compose.yml" -o -f "$PWD/compose.yaml" -o -f "$PWD/docker-compose.yml" -o -f "$PWD/docker-compose.yaml" ]
-use_docker_compose=$?
+lib_path="$(dirname $(readlink -f "$0"))/lib"
+docker_path="$lib_path/docker.sh"
+compose_path="$lib_path/docker-compose.sh"
 
-cmd_args='--user=www-data'
+# This directory exists in both images and owned by www-data. Without this
+# conditions directory created by mount will be owned by root and composer
+# won't be able to write to it, so we have to use this one.
+cache_dir='/home/www-data/cache'
+cmd_args="--user=www-data --volume=composer-cache:$cache_dir --env=COMPOSER_CACHE_DIR=$cache_dir"
 
-function run_docker_compose() {
-    if [ ! -t 0 ]; then
-        cmd_args="$cmd_args --no-TTY"
-    fi
+workdir='/app'
 
-    docker compose run --rm $cmd_args backend composer $@
-}
-
-function run_docker() {
-    if [ -t 0 ]; then
-        cmd_args="$cmd_args --tty --interactive"
-    fi
-
-    docker run --rm $cmd_args --volume="$PWD":/app --workdir /app composer:2.5 $@
-}
-
-if [ $use_docker_compose -eq 0 ]; then
-    run_docker_compose $@
+if [ -f "$PWD/compose.yml" -o -f "$PWD/compose.yaml" -o -f "$PWD/docker-compose.yml" -o -f "$PWD/docker-compose.yaml" ] ; then
+    exec "$compose_path" '' \
+        run "$cmd_args" \
+        backend "composer $*"
 else
-    run_docker $@
+    exec "$docker_path" "$cmd_args --volume=$PWD:$workdir --workdir=$workdir" \
+        composer:2.5 "composer $*"
 fi

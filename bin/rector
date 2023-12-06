@@ -1,17 +1,1 @@
-#!/bin/sh
-
-cmd=''
-cmd_args='--user=www-data'
-
-if docker compose ps --services | grep backend &>/dev/null; then
-    cmd='exec'
-else 
-    cmd='run'
-    cmd_args="$cmd_args --rm"
-fi
-
-if [ ! -t 0 ]; then
-    cmd_args="$cmd_args --no-TTY"
-fi
-
-docker compose $cmd $cmd_args backend vendor/bin/rector $@
+lib/exec-composer-bin.sh
