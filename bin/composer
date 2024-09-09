@@ -1,22 +1,24 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-lib_path="$(dirname $(readlink -f "$0"))/lib"
-docker_path="$lib_path/docker.sh"
-compose_path="$lib_path/docker-compose.sh"
+set -e
 
-# This directory exists in both images and owned by www-data. Without this
-# conditions directory created by mount will be owned by root and composer
-# won't be able to write to it, so we have to use this one.
-cache_dir='/home/www-data/cache'
-cmd_args="--user=www-data --volume=composer-cache:$cache_dir --env=COMPOSER_CACHE_DIR=$cache_dir"
+set -- "composer" "$@"
 
-workdir='/app'
+cache_dir="/tmp"
+export ENV="COMPOSER_CACHE_DIR=$cache_dir"
+export VOLUME="composer-cache:$cache_dir"
 
-if [ -f "$PWD/compose.yml" -o -f "$PWD/compose.yaml" -o -f "$PWD/docker-compose.yml" -o -f "$PWD/docker-compose.yaml" ] ; then
-    exec "$compose_path" '' \
-        run "$cmd_args" \
-        backend "composer $*"
-else
-    exec "$docker_path" "$cmd_args --volume=$PWD:$workdir --workdir=$workdir" \
-        composer:2.5 "composer $*"
+if [ -z "$IMAGE" ]; then
+    if [ "$COMPOSER_IMAGE" ]; then
+        export IMAGE="$COMPOSER_IMAGE"
+    elif [ "$COMPOSER_VERSION" ]; then
+        export IMAGE="composer:$COMPOSER_VERSION"
+    else
+        export IMAGE="composer:lts"
+    fi
 fi
+
+script_path="$(readlink -f "$0")"
+lib_path="${script_path%/*/*}/lib"
+
+exec "$lib_path/exec-in-php-service.sh" "$@"

@@ -1,1 +1,8 @@
-lib/exec-php-bin.sh
+#!/usr/bin/env sh
+
+set -e
+
+script_path="$(readlink -f "$0")"
+bin_path="${script_path%/*}"
+
+exec "$bin_path/php" artisan "$@"
